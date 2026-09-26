@@ -63,43 +63,44 @@ const LeftComponent = () => {
   }, [lastSoldPlayer1]);
 
   return (
-    <div className="pb-8 pt-2 -translate-x-20 pr-5 space-y-3">
-      {/* Most Expensive Player */}
-      {mostExpensiveTeam?.team_name && (
-        <div className="w-96 max-w-full">
-          <div className="translate-x-5">
-            <TrapHeader gold>Most expensive</TrapHeader>
-          </div>
-          <div className="bc-card-wrap pr-15 pl-20">
-            <div className="bc-card-slant py-4 pr-10 overflow-visible pl-8 relative">
-              {/* Player Details */}
-              <div className="relative z-10 min-w-0">
-                <h2 className="text-2xl font-extrabold bc-gold-text whitespace-nowrap overflow-hidden text-ellipsis">
-                  {mostExpensivePlayer1[0].player_name}
-                </h2>
-                <p className="text-base text-white/60 mt-1">
-                  {mostExpensiveTeam?.team_name || "Loading..."}
-                </p>
-                <div className="bc-para bc-para-gold px-4 py-1 mt-2 inline-block">
-                  <p className="text-xl font-extrabold">
-                    &#8377;{" "}
-                    {formatPriceInLakhs(mostExpensivePlayer1[0].final_price)}
+    <div className="pb-8 pt-2 -translate-x-5 pr-5 space-y-3">
+      <div className="flex flex-wrap gap-[-50px]">
+        {/* Most Expensive Player */}
+        {mostExpensiveTeam?.team_name && (
+          <div className="flex-1 min-w-0 max-w-full">
+            <div className="translate-x-5">
+              <TrapHeader gold>Most expensive</TrapHeader>
+            </div>
+            <div className="bc-card-wrap pr-8 pl-4">
+              <div className="bc-card-slant-vl py-4 pr-6 overflow-visible pl-6 relative">
+                {/* Player Details */}
+                <div className="relative z-10 min-w-0">
+                  <h2 className="text-2xl font-extrabold bc-gold-text whitespace-nowrap overflow-hidden text-ellipsis">
+                    {mostExpensivePlayer1[0].player_name}
+                  </h2>
+                  <p className="text-base text-white/60 mt-1">
+                    {mostExpensiveTeam?.team_name || "Loading..."}
                   </p>
+                  <div className="bc-para bc-para-gold px-4 py-1 mt-2 inline-block">
+                    <p className="text-xl font-extrabold">
+                      &#8377;{" "}
+                      {formatPriceInLakhs(mostExpensivePlayer1[0].final_price)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Last Sold Player */}
-      {lastSoldTeam?.team_name && (
-        <div className="w-96 max-w-full">
-          <div className="translate-x-5">
-            <TrapHeader>Last sold</TrapHeader>
-          </div>
-          <div className="bc-card-wrap pr-15 pl-20">
-            <div className="bc-card-slant py-4 pr-10 overflow-visible pl-8 relative">
+        {/* Last Sold Player */}
+        {lastSoldTeam?.team_name && (
+          <div className="flex-1 min-w-0 max-w-full">
+            <div className="translate-x-5">
+              <TrapHeader>Last sold</TrapHeader>
+            </div>
+            <div className="bc-card-wrap pr-8 pl-4">
+              <div className="bc-card-slant-vl py-4 pr-6 overflow-visible pl-6 relative">
                 <div className="relative z-10 min-w-0">
                   <h2 className="text-3xl font-extrabold bc-emboss whitespace-nowrap overflow-hidden text-ellipsis">
                     {lastSoldPlayer1[0].player_name}
@@ -109,15 +110,16 @@ const LeftComponent = () => {
                   </p>
                   <div className="bc-para px-4 py-1 mt-2 inline-block">
                     <p className="text-xl font-extrabold bc-gold-text">
-                    &#8377;{" "}
-                    {formatPriceInLakhs(lastSoldPlayer1[0].final_price)}
-                  </p>
+                      &#8377;{" "}
+                      {formatPriceInLakhs(lastSoldPlayer1[0].final_price)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

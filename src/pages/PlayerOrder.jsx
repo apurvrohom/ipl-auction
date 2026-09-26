@@ -40,14 +40,17 @@ export default function PlayerOrder({ bare = false }) {
       setLiveId(st?.player?.id ?? st?.current_player_id ?? null);
       setLiveStatus(st?.status ?? "IDLE");
       setNextId(st?.next_player?.id ?? null);
-      setPlayers((list ?? []).slice().sort((a, b) => {
-        const qa = (a.sold_to_team_id ?? 0) > 0 ? 1 : 0;
-        const qb = (b.sold_to_team_id ?? 0) > 0 ? 1 : 0;
-        if (qa !== qb) return qa - qb;
-        return (
-          (a.auction_order ?? 0) - (b.auction_order ?? 0) || (a.id ?? 0) - (b.id ?? 0)
-        );
-      }));
+      setPlayers(
+        (list ?? []).slice().sort((a, b) => {
+          const qa = (a.sold_to_team_id ?? 0) > 0 ? 1 : 0;
+          const qb = (b.sold_to_team_id ?? 0) > 0 ? 1 : 0;
+          if (qa !== qb) return qa - qb;
+          return (
+            (a.auction_order ?? 0) - (b.auction_order ?? 0) ||
+            (a.id ?? 0) - (b.id ?? 0)
+          );
+        }),
+      );
       setError(null);
     } catch (e) {
       setError(e.message);
@@ -75,7 +78,8 @@ export default function PlayerOrder({ bare = false }) {
     }
   };
 
-  const releaseFunds = (p) => {    if (
+  const releaseFunds = (p) => {
+    if (
       window.confirm(
         `Release funds: ${p.player_name} returns to the pool and ₹${formatPrice(p.final_price)} is refunded to ${p.sold_to_team}?`,
       )
@@ -100,13 +104,18 @@ export default function PlayerOrder({ bare = false }) {
         ...prev.filter((x) => (x.sold_to_team_id ?? 0) > 0),
       ];
     });
-    await run(p.id, () => requeuePlayers(ids), `${p.player_name} moved to #${to}`);
+    await run(
+      p.id,
+      () => requeuePlayers(ids),
+      `${p.player_name} moved to #${to}`,
+    );
   };
 
   // Open bidding on any queued player (replaces the live lot after confirm).
   const startBidding = (p) => {
     if (liveStatus === "BIDDING" && p.id !== liveId) {
-      if (!window.confirm(`Replace the live lot with ${p.player_name}?`)) return;
+      if (!window.confirm(`Replace the live lot with ${p.player_name}?`))
+        return;
     }
     run(p.id, () => startLot(p.id), `Bidding opened for ${p.player_name}`);
   };
@@ -155,11 +164,14 @@ export default function PlayerOrder({ bare = false }) {
             aria-hidden="true"
             className="bc-spin-slow absolute left-1/2 top-20 z-[1] w-[50vw] opacity-30 pointer-events-none"
           />
-          <img
-            src="https://ecell.nitk.ac.in/navLogo.png"
-            alt=""
-            className="w-40 absolute z-40 top-5 left-4"
-          />
+          <div className="absolute z-40 top-10 left-10 flex items-center gap-4">
+            <img
+              src="https://ecell.nitk.ac.in/navLogo.png"
+              alt=""
+              className="w-34 h-auto"
+            />
+            <img src="/logo.svg" alt="Sponsor" className="h-32" />
+          </div>
           <div className="absolute z-40 bottom-4 left-4 flex gap-2">
             <Link to="/">
               <MetalButton>Home</MetalButton>
@@ -219,7 +231,8 @@ export default function PlayerOrder({ bare = false }) {
                     <tr
                       key={p.id}
                       draggable={isQueued}
-                      onDragStart={(e) => {                        e.dataTransfer.effectAllowed = "move";
+                      onDragStart={(e) => {
+                        e.dataTransfer.effectAllowed = "move";
                         e.dataTransfer.setData("text/plain", String(p.id));
                         setDragId(p.id);
                       }}
@@ -228,8 +241,10 @@ export default function PlayerOrder({ bare = false }) {
                           ? (e) => {
                               e.preventDefault();
                               e.dataTransfer.dropEffect = "move";
-                              const rect = e.currentTarget.getBoundingClientRect();
-                              const after = e.clientY - rect.top > rect.height / 2;
+                              const rect =
+                                e.currentTarget.getBoundingClientRect();
+                              const after =
+                                e.clientY - rect.top > rect.height / 2;
                               setOverTarget((prev) =>
                                 prev && prev.id === p.id && prev.after === after
                                   ? prev
@@ -256,7 +271,9 @@ export default function PlayerOrder({ bare = false }) {
                       }`}
                     >
                       <td className="py-2 pr-3 text-white/50 font-bold">
-                        <span className="mr-1 text-white/30">{isQueued ? "⋮⋮" : ""}</span>
+                        <span className="mr-1 text-white/30">
+                          {isQueued ? "⋮⋮" : ""}
+                        </span>
                         {isQueued ? (
                           <input
                             key={`${p.id}-${qi}`}
@@ -294,7 +311,8 @@ export default function PlayerOrder({ bare = false }) {
                             </span>
                           )}
                           <span className="font-semibold">
-                            {(p.is_overseas ? "✈ " : "") + (p.player_name ?? "")}
+                            {(p.is_overseas ? "✈ " : "") +
+                              (p.player_name ?? "")}
                           </span>
                         </span>
                       </td>
@@ -364,9 +382,15 @@ export default function PlayerOrder({ bare = false }) {
                                 ↑
                               </button>
                               <button
-                                disabled={busy || qi < 0 || qi >= queued.length - 1}
+                                disabled={
+                                  busy || qi < 0 || qi >= queued.length - 1
+                                }
                                 onClick={() =>
-                                  run(p.id, () => movePlayer(p.id, "down"), null)
+                                  run(
+                                    p.id,
+                                    () => movePlayer(p.id, "down"),
+                                    null,
+                                  )
                                 }
                                 className="bg-white/10 px-2.5 py-1 rounded text-sm font-bold hover:bg-white/20 disabled:opacity-40"
                                 title="Move down the queue"
@@ -377,7 +401,11 @@ export default function PlayerOrder({ bare = false }) {
                                 <button
                                   disabled={busy}
                                   onClick={() =>
-                                    run(p.id, () => setPlayerStatus(p.id, "unsold"), null)
+                                    run(
+                                      p.id,
+                                      () => setPlayerStatus(p.id, "unsold"),
+                                      null,
+                                    )
                                   }
                                   className="bg-white/10 px-2.5 py-1 rounded text-xs font-bold hover:bg-white/20 disabled:opacity-40"
                                   title="Mark as passed (stays queued at the end on resale)"
@@ -388,7 +416,11 @@ export default function PlayerOrder({ bare = false }) {
                                 <button
                                   disabled={busy}
                                   onClick={() =>
-                                    run(p.id, () => setPlayerStatus(p.id, "pool"), null)
+                                    run(
+                                      p.id,
+                                      () => setPlayerStatus(p.id, "pool"),
+                                      null,
+                                    )
                                   }
                                   className="bg-white/10 px-2.5 py-1 rounded text-xs font-bold hover:bg-white/20 disabled:opacity-40"
                                   title="Back to fresh pool"
@@ -423,8 +455,8 @@ export default function PlayerOrder({ bare = false }) {
           </div>
           <p className="text-white/40 text-xs mt-3 text-center">
             Passed (unsold) players sit at the end of the queue and come back
-            for a second attempt · sold players keep their order · ▶ starts
-            here — auto-start then continues down the list, skipping the sold
+            for a second attempt · sold players keep their order · ▶ starts here
+            — auto-start then continues down the list, skipping the sold
           </p>
         </div>
       </div>

@@ -658,6 +658,29 @@
     inset 0 -8px 16px rgba(0, 0, 0, 0.4);
 }
 
+/* Same card, but with a straight (vertical) left edge instead of slanted —
+   only the right edge leans. Used where the card's left side needs to sit
+   flush against something else. */
+.bc-card-slant-vl {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 34px) 100%, 0 100%);
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 0 2px,
+      rgba(0, 0, 0, 0) 2px 4px
+    ),
+    linear-gradient(
+      180deg,
+      var(--bc-panel-hi) 0%,
+      var(--bc-panel-mid) 30%,
+      var(--bc-panel-lo) 100%
+    );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.4);
+}
+
 /* Mirror of .bc-card-slant: leans left. Wider head above (full-width top
    edge, tucked bottom edge) at the same 34px slant angle. */
 .bc-card-slant-r {

@@ -100,7 +100,10 @@ export default function BudgetGraph({ bare = false }) {
   }, [teams, sales]);
 
   const xMax = Math.max(1, ...series.map((s) => s.pts.length - 1));
-  const yMaxRaw = Math.max(100, ...series.flatMap((s) => s.pts.map((p) => p.left)));
+  const yMaxRaw = Math.max(
+    100,
+    ...series.flatMap((s) => s.pts.map((p) => p.left)),
+  );
   const yMax = Math.ceil(yMaxRaw / 100) * 100;
 
   const plotW = W - PAD.l - PAD.r;
@@ -154,11 +157,14 @@ export default function BudgetGraph({ bare = false }) {
         aria-hidden="true"
         className="bc-spin-slow absolute left-1/2 top-20 z-[1] w-[50vw] opacity-30 pointer-events-none"
       />
-      <img
-        src="https://ecell.nitk.ac.in/navLogo.png"
-        alt=""
-        className="w-40 absolute z-40 top-5 left-4"
-      />
+      <div className="absolute z-40 top-10 left-10 flex items-center gap-4">
+        <img
+          src="https://ecell.nitk.ac.in/navLogo.png"
+          alt=""
+          className="w-34 h-auto"
+        />
+        <img src="/logo.svg" alt="Sponsor" className="h-32" />
+      </div>
       <div className="absolute z-40 bottom-4 left-4 flex gap-2">
         {!bare && (
           <>
@@ -180,231 +186,238 @@ export default function BudgetGraph({ bare = false }) {
           <img src="title.svg" className="h-48 mx-auto relative" />
         </div>
         <div className="max-w-[1600px] mx-auto">
-        <div className="bc-steel-panel px-4 py-4 flex flex-col lg:flex-row gap-6">
-          {/* Left rail: title + color index */}
-          <div className="flex flex-col items-start gap-4 lg:w-60 shrink-0">
-            <TrapHeader gold>Budget left vs players</TrapHeader>
+          <div className="bc-steel-panel px-4 py-4 flex flex-col lg:flex-row gap-6">
+            {/* Left rail: title + color index */}
+            <div className="flex flex-col items-start gap-4 lg:w-60 shrink-0">
+              <TrapHeader gold>Budget left vs players</TrapHeader>
 
-            {/* Legend */}
-            <div className="flex flex-wrap lg:flex-col justify-start items-start gap-2">
-            {series.map(({ team }) => (
-              <span
-                key={team.id ?? team.name}
-                className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-white/5 border border-white/15 rounded-full px-3 py-1"
-              >
-                <span
-                  className="inline-block w-3 h-3 rounded-full"
-                  style={{
-                    background: `linear-gradient(135deg, #${team.color1}, #${team.color2})`,
-                  }}
-                />
-                {team.team_name ?? team.name}
-              </span>
-            ))}
-            </div>
-          </div>
-
-          {/* Chart */}
-          <div className="flex-1 min-w-0">
-            <svg
-              ref={plotRef}
-              viewBox={`0 0 ${W} ${H}`}
-              className="w-full h-auto cursor-crosshair"
-              onMouseMove={onMove}
-              onMouseLeave={() => setHover(null)}
-            >
-              <defs>
-                {series.map(({ team }) => {
-                  const id = `g${team.id ?? team.name}`;
-                  return (
-                    <linearGradient key={id} id={id} x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor={`#${team.color1}`} />
-                      <stop offset="100%" stopColor={`#${team.color2}`} />
-                    </linearGradient>
-                  );
-                })}
-              </defs>
-
-              {/* Gridlines + y labels */}
-              {yTicks.map((t) => (
-                <g key={t}>
-                  <line
-                    x1={PAD.l}
-                    y1={Y(t)}
-                    x2={W - PAD.r}
-                    y2={Y(t)}
-                    stroke="rgba(255,211,77,0.18)"
-                    strokeDasharray="5 5"
-                  />
-                  <text
-                    x={PAD.l - 10}
-                    y={Y(t) + 4}
-                    textAnchor="end"
-                    fontSize="13"
-                    fill="rgba(255,255,255,0.6)"
+              {/* Legend */}
+              <div className="flex flex-wrap lg:flex-col justify-start items-start gap-2">
+                {series.map(({ team }) => (
+                  <span
+                    key={team.id ?? team.name}
+                    className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider bg-white/5 border border-white/15 rounded-full px-3 py-1"
                   >
-                    {tickFmt(t)}
-                  </text>
-                </g>
-              ))}
-
-              {/* X labels (thinned on long auctions) */}
-              {xTicks
-                .filter((n) => n % xStep === 0 || n === xMax)
-                .map((n) => (
-                <text
-                  key={n}
-                  x={X(n)}
-                  y={H - PAD.b + 22}
-                  textAnchor="middle"
-                  fontSize="13"
-                  fill="rgba(255,255,255,0.6)"
-                >
-                  {n}
-                </text>
-              ))}
-              <text
-                x={PAD.l + plotW / 2}
-                y={H - 8}
-                textAnchor="middle"
-                fontSize="13"
-                letterSpacing="3"
-                fill="rgba(255,255,255,0.6)"
-              >
-                PLAYERS SOLD (AUCTION ORDER)
-              </text>
-              <text
-                x={16}
-                y={PAD.t + plotH / 2}
-                textAnchor="middle"
-                fontSize="13"
-                letterSpacing="3"
-                fill="rgba(255,255,255,0.6)"
-                transform={`rotate(-90 16 ${PAD.t + plotH / 2})`}
-              >
-                BUDGET LEFT
-              </text>
-
-              {/* Team lines (grow in on entry, staggered) */}
-              {series.map(({ team, pts }, si) => {
-                const gid = `g${team.id ?? team.name}`;
-                const coords = pts.map((p) => ({ x: X(p.n), y: Y(p.left) }));
-                return (
-                  <g key={gid}>
-                    {coords.length > 1 ? (
-                      <path
-                        d={smoothPath(coords)}
-                        fill="none"
-                        stroke={`url(#${gid})`}
-                        strokeWidth="3.5"
-                        strokeLinecap="round"
-                        pathLength={1}
-                        className={introDone ? "" : "bc-draw"}
-                        style={
-                          introDone
-                            ? undefined
-                            : { animationDelay: `${si * 0.15}s` }
-                        }
-                        onAnimationEnd={() => setIntroDone(true)}
-                      />
-                    ) : (
-                      <circle
-                        cx={coords[0].x}
-                        cy={coords[0].y}
-                        r="5"
-                        fill={`url(#${gid})`}
-                      />
-                    )}
-                    <g
-                      className={introDone ? "" : "bc-fade-group"}
-                      style={
-                        introDone
-                          ? undefined
-                          : { animationDelay: `${1.2 + si * 0.15}s` }
-                      }
-                    >
-                      {coords.map((c, i) => (
-                        <circle
-                          key={i}
-                          cx={c.x}
-                          cy={c.y}
-                          r="4"
-                          fill="#0b1830"
-                          stroke={`url(#${gid})`}
-                          strokeWidth="2.5"
-                        />
-                      ))}
-                    </g>
-                  </g>
-                );
-              })}
-
-              {/* Hover cursor + glow dots where it crosses each line */}
-              {hover != null && (
-                <g>
-                  <line
-                    x1={X(hover)}
-                    y1={PAD.t}
-                    x2={X(hover)}
-                    y2={PAD.t + plotH}
-                    stroke="rgba(255,255,255,0.5)"
-                    strokeDasharray="4 4"
-                  />
-                  {series.map(({ team, pts }) => (
-                    <circle
-                      key={team.id ?? team.name}
-                      cx={X(hover)}
-                      cy={Y(valueAt(pts, hover))}
-                      r="7"
-                      fill={`url(#g${team.id ?? team.name})`}
-                      stroke="#ffffff"
-                      strokeWidth="2"
+                    <span
+                      className="inline-block w-3 h-3 rounded-full"
+                      style={{
+                        background: `linear-gradient(135deg, #${team.color1}, #${team.color2})`,
+                      }}
                     />
-                  ))}
-                </g>
-              )}
-
-              {/* Team names at the end of each line (fade in after the draw) */}
-              <g
-                className={introDone ? "" : "bc-fade-group"}
-                style={introDone ? undefined : { animationDelay: "1.6s" }}
-              >
-              {endLabels.map(({ team, x, y }) => (
-                <text
-                  key={team.id ?? team.name}
-                  x={Math.min(x + 10, W - 8)}
-                  y={y + 4}
-                  fontSize="14"
-                  fontWeight="800"
-                  fill="#ffffff"
-                  stroke="rgba(0,0,0,0.7)"
-                  strokeWidth="3"
-                  paintOrder="stroke"
-                >
-                  {team.team_name ?? team.name}
-                </text>
-              ))}
-              </g>
-            </svg>
-
-            {/* Hover readout */}
-            {hover != null && (
-              <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 mt-2 text-sm">
-                <span className="font-extrabold bc-gold-text">
-                  {hover === 0 ? "Start:" : `After sale ${hover}:`}
-                </span>
-                {series.map(({ team, pts }) => (
-                  <span key={team.id ?? team.name} className="text-white/80">
-                    {team.team_name ?? team.name}{" "}
-                    <b className="text-white">
-                      ₹{tickFmt(valueAt(pts, hover))}
-                    </b>
+                    {team.team_name ?? team.name}
                   </span>
                 ))}
               </div>
-            )}
+            </div>
+
+            {/* Chart */}
+            <div className="flex-1 min-w-0">
+              <svg
+                ref={plotRef}
+                viewBox={`0 0 ${W} ${H}`}
+                className="w-full h-auto cursor-crosshair"
+                onMouseMove={onMove}
+                onMouseLeave={() => setHover(null)}
+              >
+                <defs>
+                  {series.map(({ team }) => {
+                    const id = `g${team.id ?? team.name}`;
+                    return (
+                      <linearGradient
+                        key={id}
+                        id={id}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1"
+                      >
+                        <stop offset="0%" stopColor={`#${team.color1}`} />
+                        <stop offset="100%" stopColor={`#${team.color2}`} />
+                      </linearGradient>
+                    );
+                  })}
+                </defs>
+
+                {/* Gridlines + y labels */}
+                {yTicks.map((t) => (
+                  <g key={t}>
+                    <line
+                      x1={PAD.l}
+                      y1={Y(t)}
+                      x2={W - PAD.r}
+                      y2={Y(t)}
+                      stroke="rgba(255,211,77,0.18)"
+                      strokeDasharray="5 5"
+                    />
+                    <text
+                      x={PAD.l - 10}
+                      y={Y(t) + 4}
+                      textAnchor="end"
+                      fontSize="13"
+                      fill="rgba(255,255,255,0.6)"
+                    >
+                      {tickFmt(t)}
+                    </text>
+                  </g>
+                ))}
+
+                {/* X labels (thinned on long auctions) */}
+                {xTicks
+                  .filter((n) => n % xStep === 0 || n === xMax)
+                  .map((n) => (
+                    <text
+                      key={n}
+                      x={X(n)}
+                      y={H - PAD.b + 22}
+                      textAnchor="middle"
+                      fontSize="13"
+                      fill="rgba(255,255,255,0.6)"
+                    >
+                      {n}
+                    </text>
+                  ))}
+                <text
+                  x={PAD.l + plotW / 2}
+                  y={H - 8}
+                  textAnchor="middle"
+                  fontSize="13"
+                  letterSpacing="3"
+                  fill="rgba(255,255,255,0.6)"
+                >
+                  PLAYERS SOLD (AUCTION ORDER)
+                </text>
+                <text
+                  x={16}
+                  y={PAD.t + plotH / 2}
+                  textAnchor="middle"
+                  fontSize="13"
+                  letterSpacing="3"
+                  fill="rgba(255,255,255,0.6)"
+                  transform={`rotate(-90 16 ${PAD.t + plotH / 2})`}
+                >
+                  BUDGET LEFT
+                </text>
+
+                {/* Team lines (grow in on entry, staggered) */}
+                {series.map(({ team, pts }, si) => {
+                  const gid = `g${team.id ?? team.name}`;
+                  const coords = pts.map((p) => ({ x: X(p.n), y: Y(p.left) }));
+                  return (
+                    <g key={gid}>
+                      {coords.length > 1 ? (
+                        <path
+                          d={smoothPath(coords)}
+                          fill="none"
+                          stroke={`url(#${gid})`}
+                          strokeWidth="3.5"
+                          strokeLinecap="round"
+                          pathLength={1}
+                          className={introDone ? "" : "bc-draw"}
+                          style={
+                            introDone
+                              ? undefined
+                              : { animationDelay: `${si * 0.15}s` }
+                          }
+                          onAnimationEnd={() => setIntroDone(true)}
+                        />
+                      ) : (
+                        <circle
+                          cx={coords[0].x}
+                          cy={coords[0].y}
+                          r="5"
+                          fill={`url(#${gid})`}
+                        />
+                      )}
+                      <g
+                        className={introDone ? "" : "bc-fade-group"}
+                        style={
+                          introDone
+                            ? undefined
+                            : { animationDelay: `${1.2 + si * 0.15}s` }
+                        }
+                      >
+                        {coords.map((c, i) => (
+                          <circle
+                            key={i}
+                            cx={c.x}
+                            cy={c.y}
+                            r="4"
+                            fill="#0b1830"
+                            stroke={`url(#${gid})`}
+                            strokeWidth="2.5"
+                          />
+                        ))}
+                      </g>
+                    </g>
+                  );
+                })}
+
+                {/* Hover cursor + glow dots where it crosses each line */}
+                {hover != null && (
+                  <g>
+                    <line
+                      x1={X(hover)}
+                      y1={PAD.t}
+                      x2={X(hover)}
+                      y2={PAD.t + plotH}
+                      stroke="rgba(255,255,255,0.5)"
+                      strokeDasharray="4 4"
+                    />
+                    {series.map(({ team, pts }) => (
+                      <circle
+                        key={team.id ?? team.name}
+                        cx={X(hover)}
+                        cy={Y(valueAt(pts, hover))}
+                        r="7"
+                        fill={`url(#g${team.id ?? team.name})`}
+                        stroke="#ffffff"
+                        strokeWidth="2"
+                      />
+                    ))}
+                  </g>
+                )}
+
+                {/* Team names at the end of each line (fade in after the draw) */}
+                <g
+                  className={introDone ? "" : "bc-fade-group"}
+                  style={introDone ? undefined : { animationDelay: "1.6s" }}
+                >
+                  {endLabels.map(({ team, x, y }) => (
+                    <text
+                      key={team.id ?? team.name}
+                      x={Math.min(x + 10, W - 8)}
+                      y={y + 4}
+                      fontSize="14"
+                      fontWeight="800"
+                      fill="#ffffff"
+                      stroke="rgba(0,0,0,0.7)"
+                      strokeWidth="3"
+                      paintOrder="stroke"
+                    >
+                      {team.team_name ?? team.name}
+                    </text>
+                  ))}
+                </g>
+              </svg>
+
+              {/* Hover readout */}
+              {hover != null && (
+                <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 mt-2 text-sm">
+                  <span className="font-extrabold bc-gold-text">
+                    {hover === 0 ? "Start:" : `After sale ${hover}:`}
+                  </span>
+                  {series.map(({ team, pts }) => (
+                    <span key={team.id ?? team.name} className="text-white/80">
+                      {team.team_name ?? team.name}{" "}
+                      <b className="text-white">
+                        ₹{tickFmt(valueAt(pts, hover))}
+                      </b>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

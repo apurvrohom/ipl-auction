@@ -127,7 +127,17 @@ export default function AudienceView() {
       )}
       <AuctionShell
       title="IPL MOCK AUCTION — LIVE"
-      left={<><Overview /><LeftComponent /></>}
+      left={
+        <div className="flex flex-col h-full min-h-full">
+          {/* Most expensive / last sold sit directly above the team table;
+              the whole group is pinned to the bottom edge and grows
+              upward as teams fill in. */}
+          <div className="mt-auto">
+            <LeftComponent />
+            <Overview />
+          </div>
+        </div>
+      }
       center={center}
       right={right}
       topRight={

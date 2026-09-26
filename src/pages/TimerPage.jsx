@@ -130,7 +130,9 @@ const TimerPage = ({ bare = false }) => {
   const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    fetchTeamsWithSquads().then(setTeams).catch(() => {});
+    fetchTeamsWithSquads()
+      .then(setTeams)
+      .catch(() => {});
     const id = setInterval(() => setTick((t) => t + 1), ROTATE_MS);
     return () => clearInterval(id);
   }, []);
@@ -156,11 +158,14 @@ const TimerPage = ({ bare = false }) => {
         aria-hidden="true"
         className="bc-spin-slow absolute left-1/2 top-20 z-[1] w-[50vw] opacity-30 pointer-events-none"
       />
-      <img
-        src="https://ecell.nitk.ac.in/navLogo.png"
-        alt=""
-        className="w-40 absolute z-40 top-5 left-4"
-      />
+      <div className="absolute z-40 top-10 left-10 flex items-center gap-4">
+        <img
+          src="https://ecell.nitk.ac.in/navLogo.png"
+          alt=""
+          className="w-34 h-auto"
+        />
+        <img src="/logo.svg" alt="Sponsor" className="h-32" />
+      </div>
       <div className="absolute z-40 bottom-4 left-4 flex gap-2">
         {!bare && (
           <>
@@ -205,19 +210,22 @@ const TimerPage = ({ bare = false }) => {
           </p>
         )}
 
-      {/* Team spotlights pinned to the screen edges */}
-      <div className="hidden xl:block fixed left-4 top-1/2 -translate-y-1/2 z-20">
-        <TeamSpotlight team={leftTeam} />
-      </div>
-      <div className="hidden xl:block fixed right-4 top-1/2 -translate-y-1/2 z-20">
-        <TeamSpotlight team={rightTeam} />
-      </div>
+        {/* Team spotlights pinned to the screen edges */}
+        <div className="hidden xl:block fixed left-4 top-1/2 -translate-y-1/2 z-20">
+          <TeamSpotlight team={leftTeam} />
+        </div>
+        <div className="hidden xl:block fixed right-4 top-1/2 -translate-y-1/2 z-20">
+          <TeamSpotlight team={rightTeam} />
+        </div>
 
-          {/* Timer Section: countdown only, no background panel.
+        {/* Timer Section: countdown only, no background panel.
               Driven from Control → Live tab; this screen just watches. */}
-          <div className="w-full max-w-2xl">
-            <Timer auctionEndTime={auctionEndTime} setAuctionEndTime={setAuctionEndTime} />
-          </div>
+        <div className="w-full max-w-2xl">
+          <Timer
+            auctionEndTime={auctionEndTime}
+            setAuctionEndTime={setAuctionEndTime}
+          />
+        </div>
 
         {/* Purchased Players Section: vertical up/down rail */}
         <div className="w-full max-w-4xl mt-8">
