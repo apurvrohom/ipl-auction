@@ -168,7 +168,7 @@ export default function PlayerOrder({ bare = false }) {
             <img
               src="https://ecell.nitk.ac.in/navLogo.png"
               alt=""
-              className="w-34 h-auto"
+              className="w-[8.5rem] h-auto"
             />
             <img src="/logo.svg" alt="Sponsor" className="h-32" />
           </div>

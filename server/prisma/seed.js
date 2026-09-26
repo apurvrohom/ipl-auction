@@ -1,9 +1,10 @@
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 
-// Single source of truth: reuse the frontend dummy dataset so seeded
-// Postgres rows match what dummy mode shows in the UI.
-import { dummyPlayers, dummyTeams } from "../../src/data/dummyData.js";
+// Teams still come from the frontend dummy dataset; players are seeded from
+// the auction-list CSVs (see csvPlayers.js) instead.
+import { dummyTeams } from "../../src/data/dummyData.js";
+import { buildPlayersFromCsv } from "./csvPlayers.js";
 
 const prisma = new PrismaClient();
 
@@ -29,31 +30,8 @@ async function main() {
     });
   }
 
-  for (const p of dummyPlayers) {
-    await prisma.player.create({
-      data: {
-        id: p.id,
-        playerName: p.player_name,
-        playerImage: p.player_image ?? null,
-        basePrice: p.base_price ?? 0,
-        finalPrice: p.final_price ?? 0,
-        soldToTeamId: p.sold_to_team_id ?? 0,
-        soldToTeam: p.sold_to_team ?? null,
-        timeOfSelling: p.time_of_selling ? new Date(p.time_of_selling) : null,
-        category: p.category ?? null,
-        isOverseas: p.is_overseas ?? false,
-        matches: p.matches ?? 0,
-        runs: p.runs ?? 0,
-        batAvg: p.bat_avg ?? null,
-        sr: p.sr ?? null,
-        catches: p.catches ?? 0,
-        stumpings: p.stumpings ?? 0,
-        wickets: p.wickets ?? 0,
-        bowlAvg: p.bowl_avg ?? null,
-        eco: p.eco ?? null,
-      },
-    });
-  }
+  const players = buildPlayersFromCsv();
+  await prisma.player.createMany({ data: players });
 
   // Keep SERIAL sequences in sync since we inserted explicit ids.
   await prisma.$executeRawUnsafe(

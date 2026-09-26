@@ -196,8 +196,12 @@ function HealthPanel() {
     return () => clearInterval(id);
   }, [check]);
 
+  // Frontend-only gate — a shared secret phrase instead of just typing
+  // "NUKE", so the button can't be armed by accident. The backend's own
+  // contract is unchanged (still expects `confirm: "NUKE"`).
+  const NUKE_SECRET = "ecellisgreat";
   const nuke = async () => {
-    if (nukeText !== "NUKE") return;
+    if (nukeText !== NUKE_SECRET) return;
     setNuking(true);
     setNukeResult(null);
     try {
@@ -292,19 +296,20 @@ function HealthPanel() {
         <p className="font-bold text-red-300 mb-1">Danger zone — nuke database</p>
         <p className="text-xs text-white/50 mb-3">
           Resets every sale, clears all logs, refunds every purse, parks the
-          desk at IDLE. Teams and players stay. Type{" "}
-          <b className="text-white">NUKE</b> to arm the button.
+          desk at IDLE. Teams and players stay. Enter the secret phrase to
+          arm the button.
         </p>
         <div className="flex items-center gap-2">
           <input
+            type="password"
             value={nukeText}
             onChange={(e) => setNukeText(e.target.value)}
-            placeholder="Type NUKE"
+            placeholder="Secret phrase"
             className="w-40 rounded-lg bg-white/10 px-3 py-2 text-sm text-white placeholder-white/30"
           />
           <button
             onClick={nuke}
-            disabled={nuking || nukeText !== "NUKE"}
+            disabled={nuking || nukeText !== NUKE_SECRET}
             className="rounded-lg bg-red-600 px-4 py-2 text-sm font-extrabold hover:bg-red-500 disabled:opacity-40"
           >
             {nuking ? "Nuking…" : "Nuke database"}
@@ -493,7 +498,8 @@ export default function ControlDashboard() {
     });
   };
 
-  // Number-key team selection (1-9 / 0) plus +/- for a quick ±25L bump.
+  // Number-key team selection (1-9 / 0) plus +/- for a quick ±10L bump
+  // (the base unit — same step as the smallest +10L/-10L button).
   // Skipped while typing in the price field.
   useEffect(() => {
     const onKey = (e) => {
@@ -506,11 +512,11 @@ export default function ControlDashboard() {
         return;
       }
       if (e.key === "+" || e.key === "=") {
-        bumpAmount(25);
+        bumpAmount(10);
         return;
       }
       if (e.key === "-" || e.key === "_") {
-        bumpAmount(-25);
+        bumpAmount(-10);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -799,7 +805,9 @@ export default function ControlDashboard() {
               </p>
               <div className="flex gap-2 mb-2">
                 {[
-                  { step: 25, label: "+25L" },
+                  { step: 10, label: "+10L" },
+                  { step: 20, label: "+20L" },
+                  { step: 30, label: "+30L" },
                   { step: 50, label: "+50L" },
                   { step: 100, label: "+1Cr" },
                 ].map(({ step, label }) => (
@@ -816,7 +824,9 @@ export default function ControlDashboard() {
               </div>
               <div className="flex gap-2 mb-3">
                 {[
-                  { step: 25, label: "-25L" },
+                  { step: 10, label: "-10L" },
+                  { step: 20, label: "-20L" },
+                  { step: 30, label: "-30L" },
                   { step: 50, label: "-50L" },
                   { step: 100, label: "-1Cr" },
                 ].map(({ step, label }) => (

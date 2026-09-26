@@ -6,7 +6,7 @@ export const dummyTeams = [
   {
     id: 1,
     team_name: "Mumbai Indians",
-    purse: 8500,
+    purse: 10000,
     team_logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSYHIPc6pjjtDWrV0em6RBwXohoUP8OUtfinn1DqsipvQ&s=10",
     text_color: "white",
     color1: "004BA0",
@@ -15,7 +15,7 @@ export const dummyTeams = [
   {
     id: 2,
     team_name: "Chennai Super Kings",
-    purse: 9200,
+    purse: 10000,
     team_logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTp_p59xs1QPUOQbbzEUqLr6yZBLpz2Q2iVJ-mjJn7d0g&s=10",
     text_color: "black",
     color1: "F9CD05",
@@ -24,7 +24,7 @@ export const dummyTeams = [
   {
     id: 3,
     team_name: "Delhi Capitals",
-    purse: 7800,
+    purse: 10000,
     team_logo: "https://i.pinimg.com/736x/a4/87/26/a48726809d1115236c20842dc781ae55.jpg",
     text_color: "white",
     color1: "2561AE",
@@ -33,7 +33,7 @@ export const dummyTeams = [
   {
     id: 4,
     team_name: "Kolkata Knight Riders",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9Rc8I6x-f_4NZ_eitOXdrM6kcI875c4Oug7joq7XbmlD3k-JCZXnMmgDn&s=10",
     text_color: "white",
     color1: "3A225D",
@@ -42,7 +42,7 @@ export const dummyTeams = [
   {
     id: 5,
     team_name: "Royal Challengers Bengaluru",
-    purse: 7500,
+    purse: 10000,
     team_logo: "https://www.royalchallengers.com/PRRCB01/public/styles/1061x767_landscape/public/2025-01/RCB-LOGO-IMAGE-%281%29.jpg?itok=P9QAi9nI",
     text_color: "white",
     color1: "EC1C24",
@@ -51,7 +51,7 @@ export const dummyTeams = [
   {
     id: 6,
     team_name: "Rajasthan Royals",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://thumb.wikimedia.org/wikipedia/en/thumb/5/5c/This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg/330px-This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg.png",
     text_color: "white",
     color1: "EA1A85",
@@ -60,7 +60,7 @@ export const dummyTeams = [
   {
     id: 7,
     team_name: "Sunrisers Hyderabad",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://thumb.wikimedia.org/wikipedia/en/thumb/5/51/Sunrisers_Hyderabad_Logo.svg/330px-Sunrisers_Hyderabad_Logo.svg.png",
     text_color: "white",
     color1: "FF822A",
@@ -69,7 +69,7 @@ export const dummyTeams = [
   {
     id: 8,
     team_name: "Punjab Kings",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://thumb.wikimedia.org/wikipedia/en/thumb/d/d4/Punjab_Kings_Logo.svg/330px-Punjab_Kings_Logo.svg.png",
     text_color: "white",
     color1: "ED1B24",
@@ -78,7 +78,7 @@ export const dummyTeams = [
   {
     id: 9,
     team_name: "Gujarat Titans",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://thumb.wikimedia.org/wikipedia/en/thumb/0/09/Gujarat_Titans_Logo.svg/330px-Gujarat_Titans_Logo.svg.png",
     text_color: "white",
     color1: "1B2133",
@@ -87,7 +87,7 @@ export const dummyTeams = [
   {
     id: 10,
     team_name: "Lucknow Super Giants",
-    purse: 8000,
+    purse: 10000,
     team_logo: "https://thumb.wikimedia.org/wikipedia/en/thumb/3/34/Lucknow_Super_Giants_Logo.svg/330px-Lucknow_Super_Giants_Logo.svg.png",
     text_color: "white",
     color1: "ED1C24",
