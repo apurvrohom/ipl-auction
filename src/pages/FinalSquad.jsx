@@ -95,18 +95,6 @@ const TeamsWithCompactDesign = ({ bare = false }) => {
         />
         <img src="/logo.svg" alt="Sponsor" className="h-32" />
       </div>
-      <div className="absolute z-40 bottom-4 left-4 flex gap-2">
-        {!bare && (
-          <>
-            <Link to="/">
-              <MetalButton>Home</MetalButton>
-            </Link>
-            <Link to="/break">
-              <MetalButton>Break</MetalButton>
-            </Link>
-          </>
-        )}
-      </div>
 
       <div className="relative z-10 px-6 pt-4 pb-16">
         <div className="w-full">
