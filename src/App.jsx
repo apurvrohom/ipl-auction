@@ -10,12 +10,12 @@ import BudgetGraph from './pages/BudgetGraph';
 // switched remotely from /control's Live tab (cycle mode rotates through
 // them). /team-overview and /graph expose those same squads/chart
 // components directly, for standalone viewing outside the cycle.
+// <Route path="/control" element={<ControlDashboard />} />
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<AudienceView />} />
-        <Route path="/control" element={<ControlDashboard />} />
         <Route path="/team-overview" element={<TeamsWithCompactDesign />} />
         <Route path="/graph" element={<BudgetGraph />} />
       </Routes>
